@@ -9,7 +9,7 @@ projectRouter.use(requireAuth);
 projectRouter.post('/', project.createProject);
 projectRouter.get('/', project.listProjects);
 projectRouter.get('/:projectId/tasks', project.listProjectTasks);
-projectRouter.post('/:projectId/tasks', task.createTask);
+projectRouter.post('/:projectId/tasks',requireAdmin, task.createTask);
 projectRouter.patch('/:id', project.patchProject);
 projectRouter.post('/:id/members', project.addProjectMembers);
 projectRouter.delete('/:id/members', project.removeProjectMembers);
