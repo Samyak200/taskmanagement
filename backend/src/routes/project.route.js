@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { requireAuth } from '../middleware/auth.middleware.js';
+import { requireAuth, requireAdmin } from '../middleware/auth.middleware.js';
 import * as project from '../controllers/project.controller.js';
 import * as task from '../controllers/task.controller.js';
 
