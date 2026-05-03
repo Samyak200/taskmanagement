@@ -2,7 +2,6 @@ import projectModel from '../models/project.model.js';
 import taskModel from '../models/task.model.js';
 import userModel from '../models/user.model.js';
 import { isValidObjectId } from '../middleware/auth.middleware.js';
-import { canViewProject, canManageProject } from '../utils/projectAccess.js';
 import { projectPopulation } from '../utils/projectPopulate.js';
 
 export async function createProject(req, res, next) {
