@@ -1,49 +1,101 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Register() {
-  const navigate = useNavigate()
-  const { register } = useAuth()
-  const [username, setUsername] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [pending, setPending] = useState(false)
+  const navigate = useNavigate();
+  const { register } = useAuth();
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
 
   async function handleSubmit(e) {
-    e.preventDefault()
-    setError('')
+    e.preventDefault();
+    setError("");
     if (password.length < 6) {
-      setError('Password needs at least 6 characters.')
-      return
+      setError("Password needs at least 6 characters.");
+      return;
     }
-    setPending(true)
+    setPending(true);
     try {
-      await register({ username: username.trim(), email: email.trim(), password })
-      navigate('/', { replace: true })
+      await register({
+        username: username.trim(),
+        email: email.trim(),
+        password,
+      });
+      navigate("/", { replace: true });
     } catch (err) {
-      setError(err.message || 'Could not register')
+      setError(err.message || "Could not register");
     } finally {
-      setPending(false)
+      setPending(false);
     }
   }
+
+  const API = "http://localhost:5000/api/auth";
+
+  const [doctors, setDoctors] = useState([]);
+  const [formdata, setForm] = useState({
+    name: "",
+    specialization: "",
+    experience: "",
+    location: "",
+    fee: "",
+    image: "",
+  });
+  const [render, setRender] = useState("");
+  const [infoData, setInfoData] = useState(null);
+
+  const fetchDoctors = async () => {
+    try {
+      const res = await axios.get(API);
+      setDoctors(res.data);
+    } catch (err) {
+      <h1>{err.message}</h1>;
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await axios.post(API, formdata);
+    setForm({
+      name: "",
+      specialization: "",
+      experience: "",
+      location: "",
+      fee: "",
+      image: "",
+    });
+    fetchDoctors();
+  };
+
+  const handleRender = (task) => {
+    setRender(task);
+  };
 
   return (
     <main className="flex min-h-screen flex-col justify-center bg-slate-50 px-4 py-12">
       <div className="mx-auto w-full max-w-md rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-        <h1 className="text-center text-2xl font-semibold text-slate-900">Create account</h1>
+        <h1 className="text-center text-2xl font-semibold text-slate-900">
+          Create account
+        </h1>
         <p className="mt-2 text-center text-sm text-slate-500">
           Team Task Manager — beginner friendly signup
         </p>
 
         {error ? (
-          <p className="mt-6 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+          <p className="mt-6 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+            {error}
+          </p>
         ) : null}
 
         <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-1">
-            <label htmlFor="username" className="text-sm font-medium text-slate-700">
+            <label
+              htmlFor="username"
+              className="text-sm font-medium text-slate-700"
+            >
               Username
             </label>
             <input
@@ -57,7 +109,10 @@ export default function Register() {
             />
           </div>
           <div className="space-y-1">
-            <label htmlFor="email" className="text-sm font-medium text-slate-700">
+            <label
+              htmlFor="email"
+              className="text-sm font-medium text-slate-700"
+            >
               Email
             </label>
             <input
@@ -71,7 +126,10 @@ export default function Register() {
             />
           </div>
           <div className="space-y-1">
-            <label htmlFor="password" className="text-sm font-medium text-slate-700">
+            <label
+              htmlFor="password"
+              className="text-sm font-medium text-slate-700"
+            >
               Password (min 6)
             </label>
             <input
@@ -91,17 +149,20 @@ export default function Register() {
             disabled={pending}
             className="w-full rounded-lg bg-indigo-600 py-2.5 font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
           >
-            {pending ? 'Signing up…' : 'Sign up'}
+            {pending ? "Signing up…" : "Sign up"}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-slate-600">
-          Already have an account?{' '}
-          <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-800">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="font-medium text-indigo-600 hover:text-indigo-800"
+          >
             Log in
           </Link>
         </p>
       </div>
     </main>
-  )
+  );
 }
